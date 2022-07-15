@@ -13,7 +13,8 @@ func! s:showMarks(...)
     let list = sort(filter(split(cout, "\n")[1:], 'v:val[1] =~# "' . s:enabled_marks . '"'))
     let marksByLnum = {}
     for line in list
-        let [text, lnum] = filter(split(line, " "), 'v:val != ""')[0:1]
+        let [text, lnum, col, fileortext] = filter(split(line, " "), 'v:val != ""')[0:3]
+        if filereadable(fileortext) | continue | endif
         let marksOflnum = get(marksByLnum, lnum, [])
         let marksOflnum = marksOflnum + [text]
         let marksByLnum[lnum] = marksOflnum
