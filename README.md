@@ -6,7 +6,7 @@ fast, mini, simple
 
 ## INSTALL
 
-`plug 'yaocccc/vim-showmarks'`
+`Plug 'yaocccc/vim-showmarks'`
 
 ## CONFIG
 
