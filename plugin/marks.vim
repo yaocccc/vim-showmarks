@@ -5,7 +5,7 @@ let s:enabled_marks = get(g:, 'enabled_marks', '[a-zA-Z]')
 
 func! s:showMarks(...)
     let bufnr = bufnr()
-    if &ft == "" || !buflisted(bufnr) | return | endif
+    if bufname() == "" || !buflisted(bufnr) | return | endif
     call sign_unplace('*', {'id': s:mark_ns_id})
     redir => cout
     silent marks
@@ -13,7 +13,8 @@ func! s:showMarks(...)
     let list = sort(filter(split(cout, "\n")[1:], 'v:val[1] =~# "' . s:enabled_marks . '"'))
     let marksByLnum = {}
     for line in list
-        let [text, lnum, col, fileortext] = filter(split(line, " "), 'v:val != ""')[0:3]
+        let items=filter(split(line, " "), 'v:val != ""') + ['']
+        let [text, lnum, col, fileortext] = items[0:3]
         if filereadable(fileortext) | continue | endif
         let marksOflnum = get(marksByLnum, lnum, [])
         let marksOflnum = marksOflnum + [text]
