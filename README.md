@@ -12,7 +12,7 @@ fast, mini, simple
 
 ```viml
   hi Marks ctermfg=80
-  let s:mark_ns_id = [number]  " default 9898
-  let s:mark_priority = [number] " default 999
-  let s:enabled_marks = "[string]" default '[a-zA-Z]'
+  let g:mark_ns_id = [number]  " default 9898
+  let g:mark_priority = [number] " default 999
+  let g:enabled_marks = "[string]" default '[a-zA-Z]'
 ```
