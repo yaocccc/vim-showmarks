@@ -4,9 +4,9 @@ let s:mark_priority = get(g:, 'mark_priority', 999)
 let s:enabled_marks = get(g:, 'enabled_marks', '[a-zA-Z]')
 
 func! s:showMarks(...)
+    call sign_unplace('*', {'id': s:mark_ns_id})
     let bufnr = bufnr()
     if bufname() == "" || !buflisted(bufnr) | return | endif
-    call sign_unplace('*', {'id': s:mark_ns_id})
     redir => cout
     silent marks
     redir END
