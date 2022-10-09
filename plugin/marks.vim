@@ -1,17 +1,26 @@
 hi Marks ctermfg=80
 let s:mark_ns_id = get(g:, 'mark_ns_id', 9898)
 let s:mark_priority = get(g:, 'mark_priority', 999)
-let s:enabled_marks = get(g:, 'enabled_marks', '[a-zA-Z]')
+
+func! s:parseMarkOut(mark)
+    let sign = substitute(a:mark, '\v\s+(.)\s+(\d+)\s+(\d+)\s+(.*)$', '\1', 'g')
+    let lnum = substitute(a:mark, '\v\s+(.)\s+(\d+)\s+(\d+)\s+(.*)$', '\2', 'g')
+    let col = substitute(a:mark, '\v\s+(.)\s+(\d+)\s+(\d+)\s+(.*)$', '\3', 'g')
+    let fileortext = substitute(a:mark, '\v\s+(.)\s+(\d+)\s+(\d+)\s+(.*)$', '\4', 'g')
+    return [sign, lnum, col, fileortext]
+endf
 
 func! s:getMarks()
-    let marks = getmarklist(bufname())
-    let marks = filter(marks, 'v:val.mark[1] =~# s:enabled_marks')
+    redir => cout
+        silent marks
+    redir END
     let marksByLnum = {}
-    for m in marks
-        let mark = m.mark[1]
-        let lnum = m.pos[1]
+    let list = sort(filter(split(cout, "\n")[1:], 'v:val[1] =~# "[A-Za-z]"'))
+    for line in list
+        let [sign, lnum, col, fileortext] = s:parseMarkOut(line)
+        if sign =~# "[A-Z]" && !(getline(lnum) ==# fileortext) | continue | endif
         let marksOflnum = get(marksByLnum, lnum, [])
-        let marksOflnum = marksOflnum + [mark]
+        let marksOflnum = marksOflnum + [sign]
         let marksByLnum[lnum] = marksOflnum
     endfor
     return marksByLnum
@@ -32,4 +41,4 @@ endf
 
 noremap <unique> <script> \sm m
 noremap <silent> m :exe 'norm \sm'.nr2char(getchar())<bar>call <SID>showMarks()<CR>
-au WinEnter,BufWinEnter,CursorHold * call <SID>showMarks()
+au VimEnter,WinEnter,BufWinEnter,CursorHold * call <SID>showMarks()
