@@ -39,6 +39,6 @@ func! s:showMarks(...)
     endfor
 endf
 
-noremap <unique> <script> \sm m
+noremap <script> \sm m
 noremap <silent> m :exe 'norm \sm'.nr2char(getchar())<bar>call <SID>showMarks()<CR>
 au VimEnter,WinEnter,BufWinEnter,CursorHold * call <SID>showMarks()
